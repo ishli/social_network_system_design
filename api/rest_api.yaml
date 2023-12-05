@@ -54,7 +54,7 @@ paths:
         '404':
           description: Friend not found
         '500':
-          description: Internal Server Error. Please, call to +123456
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -79,7 +79,7 @@ paths:
         '404':
           description: Friend not found
         '500':
-          description: Internal Server Error. Please, call to +123456
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - vk_auth:all
@@ -110,6 +110,8 @@ paths:
           description: Invalid user ID
         '404':
           description: userId not found
+        '500':
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -140,6 +142,8 @@ paths:
           description: Invalid user ID
         '404':
           description: userId not found
+        '500':
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -167,7 +171,7 @@ paths:
         '400':
           description: Invalid params
         '500':
-          description: Internal Server Error. Please, call to +123456
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -195,7 +199,7 @@ paths:
         '400':
           description: Invalid params
         '500':
-          description: Internal Server Error. Please, call to +123456
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -226,6 +230,8 @@ paths:
           description: Invalid user ID
         '404':
           description: userId not found
+        '500':
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -256,6 +262,8 @@ paths:
           description: Invalid user ID
         '404':
           description: userId not found
+        '500':
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -293,6 +301,8 @@ paths:
           description: Invalid user ID
         '404':
           description: userId not found
+        '500':
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
@@ -334,7 +344,7 @@ paths:
         '400':
           description: Invalid params
         '500':
-          description: Internal Server Error. Please, call to +123456
+          description: Server error. Please, call to +123456
       security:
         - vk_auth:
             - write:all
