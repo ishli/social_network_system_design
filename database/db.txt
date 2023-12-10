@@ -5,7 +5,7 @@ Table users {
   name varchar
   city varchar
   user_min_foto_url varchar
-  minimal_info json // минимальная информация
+  work_place varchar
 }
 
 // можно в отдельную document DB
@@ -14,32 +14,24 @@ Table user_data {
   user_foto_url varchar
   description text
   city varchar
-  interests text
-  relation_status user_relation_status
-  love_user_id integer
+  interests json
+}
+
+
+
+
+Table user_relations {
+  relation_id interger [primary key]
+  user_id integer
+  relation_user_id interger
+  relation_type user_relation_status
 }
 
 Enum user_relation_status {
-  "none"
-  "all bad"
+  "friend"
   "love"
 }
 
-// я предположил, что списки друзей и подписчиков можно 
-// просто хранить в json и иногда в отдельном джобе доставать
-// для поиска возможных друзей
-Table user_relations {
-  user_id integer [primary key]
-  friends json // {"data": [{"userId":1},...,{"userId":111}]}
-  followers json // {"data": [{"userId":1},...,{"userId":111}]}
-}
-
-// comments - это Json с 
-// названиями файлов (названия формируются по алгоритму вида Post_id, chunk_id) 
-// на каком-то специальном сервере для комментариев,
-// каждый файл хранит часть последовательности комментариев в виде Json.
-// При просмотре поста, клиент передает на сервер список названий 
-// файлов с комментариями, получает их и строит на клиенте.
 Table posts {
   id integer [primary key]
   user_id integer
@@ -49,41 +41,38 @@ Table posts {
   likes_count integer
   views_count integer
   hash_tags text
-  comments json // {"chunks": ["121_1","121_2"]}
-  media json // {"data":["media_url_1","media_url_2"]}
+  media_urls varchar // "media_url_1, media_url_2"
+}
+
+Table post_comments {
+  id interger [primary key]
+  post_id interger
+  text varchar
 }
 
 Table user_chats {
-   id integer [primary key]
    user_id interger
    chat_id interger
 }
 
-// messages - это Json с 
-// названиями файлов (названия формируются по алгоритму вида chat_id, chunk_id) 
-// на каком-то специальном сервере для комментариев,
-// каждый файл хранит часть последовательности сообщений в виде Json (текст сообщения, прочитанность, реакции и т.д.).
-// При просмотре поста, клиент передает на сервер список названий 
-// файлов с комментариями, получает их и строит на клиенте.
+
 Table chats {
   id integer [primary key]
   chat_id integer [primary key]
   title varchar
   chat_type chat_type
   to_user_id integer
-  messages json //{"chunks": ["121_1","121_2"]}
+}
+
+Table chat_messages {
+  id interger [primary key]
+  chat_id interger
+  text varchar
 }
 
 Enum chat_type {
   "chat"
   "private"
-}
-
-// файловое хранилище, скорее обычный файл с закодированным именем
-Table media {
-  url varchar
-  owner_id interger
-  type media_type
 }
 
 
@@ -104,14 +93,24 @@ Enum media_type {
 
 Ref: "user_data"."user_id" - "users"."user_id"
 
-Ref: "user_relations"."user_id" - "users"."user_id"
 
-Ref: "users"."user_id" < "user_chats"."id"
 
-Ref: "users"."user_id" < "posts"."user_id"
+Ref: "users"."user_id" - "user_chats"."user_id"
+
+Ref: "users"."user_id" > "posts"."user_id"
 
 Ref: "users"."user_id" < "user_media"."user_id"
 
-Ref: "user_media"."url" - "media"."url"
+
 
 Ref: "chats"."chat_id" - "user_chats"."chat_id"
+
+Ref: "chat_messages"."chat_id" < "chats"."id"
+
+Ref: "post_comments"."post_id" < "posts"."id"
+
+
+
+Ref: "user_relations"."user_id" < "users"."user_id"
+
+Ref: "user_relations"."relation_user_id" < "users"."user_id"
