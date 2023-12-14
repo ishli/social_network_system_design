@@ -3,9 +3,8 @@
 Table users {
   user_id integer [primary key]
   name varchar
-  city varchar
   user_min_foto_url varchar
-  work_place varchar
+  work_place integer 
 }
 
 // можно в отдельную document DB
@@ -13,10 +12,21 @@ Table user_data {
   user_id integer [primary key]
   user_foto_url varchar
   description text
-  city varchar
+  city integer
   interests json
 }
 
+
+Table work_places{
+  work_place_id interger [primary key]
+  name varchar
+  city interger
+}
+
+Table cities{
+  city_id interger [primary key]
+  Name varchar
+}
 
 
 
@@ -40,7 +50,7 @@ Table posts {
   created_at timestamp
   likes_count integer
   views_count integer
-  hash_tags text
+  hash_tags varchar[]
   media_urls varchar // "media_url_1, media_url_2"
 }
 
@@ -61,12 +71,13 @@ Table chats {
   chat_id integer [primary key]
   title varchar
   chat_type chat_type
-  to_user_id integer
 }
 
 Table chat_messages {
   id interger [primary key]
   chat_id interger
+  create_date datetime
+  author_id interger
   text varchar
 }
 
@@ -114,3 +125,12 @@ Ref: "post_comments"."post_id" < "posts"."id"
 Ref: "user_relations"."user_id" < "users"."user_id"
 
 Ref: "user_relations"."relation_user_id" < "users"."user_id"
+
+Ref: "users"."work_place" - "work_places"."work_place_id"
+
+Ref: "work_places"."city" - "cities"."city_id"
+
+
+Ref: "user_data"."city" - "cities"."city_id"
+
+Ref: "chat_messages"."author_id" - "users"."user_id"
