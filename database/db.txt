@@ -1,0 +1,136 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+Table users {
+  user_id integer [primary key]
+  name varchar
+  user_min_foto_url varchar
+  work_place integer 
+}
+
+// можно в отдельную document DB
+Table user_data {
+  user_id integer [primary key]
+  user_foto_url varchar
+  description text
+  city integer
+  interests json
+}
+
+
+Table work_places{
+  work_place_id interger [primary key]
+  name varchar
+  city interger
+}
+
+Table cities{
+  city_id interger [primary key]
+  Name varchar
+}
+
+
+
+Table user_relations {
+  relation_id interger [primary key]
+  user_id integer
+  relation_user_id interger
+  relation_type user_relation_status
+}
+
+Enum user_relation_status {
+  "friend"
+  "love"
+}
+
+Table posts {
+  id integer [primary key]
+  user_id integer
+  title varchar
+  body text
+  created_at timestamp
+  likes_count integer
+  views_count integer
+  hash_tags varchar[]
+  media_urls varchar // "media_url_1, media_url_2"
+}
+
+Table post_comments {
+  id interger [primary key]
+  post_id interger
+  text varchar
+}
+
+Table user_chats {
+   user_id interger
+   chat_id interger
+}
+
+
+Table chats {
+  id integer [primary key]
+  chat_id integer [primary key]
+  title varchar
+  chat_type chat_type
+}
+
+Table chat_messages {
+  id interger [primary key]
+  chat_id interger
+  create_date datetime
+  author_id interger
+  text varchar
+}
+
+Enum chat_type {
+  "chat"
+  "private"
+}
+
+
+Table user_media {
+  id integer [primary key]
+  user_id interger
+  url varchar
+  type media_type
+}
+
+Enum media_type {
+  "photo"
+  "video"
+  "audio"
+}
+
+
+
+Ref: "user_data"."user_id" - "users"."user_id"
+
+
+
+Ref: "users"."user_id" - "user_chats"."user_id"
+
+Ref: "users"."user_id" > "posts"."user_id"
+
+Ref: "users"."user_id" < "user_media"."user_id"
+
+
+
+Ref: "chats"."chat_id" - "user_chats"."chat_id"
+
+Ref: "chat_messages"."chat_id" < "chats"."id"
+
+Ref: "post_comments"."post_id" < "posts"."id"
+
+
+
+Ref: "user_relations"."user_id" < "users"."user_id"
+
+Ref: "user_relations"."relation_user_id" < "users"."user_id"
+
+Ref: "users"."work_place" - "work_places"."work_place_id"
+
+Ref: "work_places"."city" - "cities"."city_id"
+
+
+Ref: "user_data"."city" - "cities"."city_id"
+
+Ref: "chat_messages"."author_id" - "users"."user_id"
