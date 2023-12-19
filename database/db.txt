@@ -1,21 +1,18 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
+// Основные моменты
+// 1. Все таблицы расположены в трех БД (Postgre, Mongo & Neo4j)
+// 2. Предполагается виртуальное шардирование (условные 128 шард, где физически есть изначально 1-2)
+// 3. На каждом шарде есть 1 master и 2 slave
+
+
+// Блок реляционной БД (PostgreSQL)
+// репликация master-slave (async-sync)
+// шардирование по user_id
 Table users {
   user_id integer [primary key]
   name varchar
   user_min_foto_url varchar
   work_place integer 
 }
-
-// можно в отдельную document DB
-Table user_data {
-  user_id integer [primary key]
-  user_foto_url varchar
-  description text
-  city integer
-  interests json
-}
-
 
 Table work_places{
   work_place_id interger [primary key]
@@ -26,20 +23,6 @@ Table work_places{
 Table cities{
   city_id interger [primary key]
   Name varchar
-}
-
-
-
-Table user_relations {
-  relation_id interger [primary key]
-  user_id integer
-  relation_user_id interger
-  relation_type user_relation_status
-}
-
-Enum user_relation_status {
-  "friend"
-  "love"
 }
 
 Table posts {
@@ -65,7 +48,6 @@ Table user_chats {
    chat_id interger
 }
 
-
 Table chats {
   id integer [primary key]
   chat_id integer [primary key]
@@ -81,12 +63,6 @@ Table chat_messages {
   text varchar
 }
 
-Enum chat_type {
-  "chat"
-  "private"
-}
-
-
 Table user_media {
   id integer [primary key]
   user_id interger
@@ -94,13 +70,45 @@ Table user_media {
   type media_type
 }
 
+
+// Блок  документоориентированной БД (MongoDb)
+// репликация master-slave (async-sync)
+// шардирование по user_id
+Table user_data {
+  user_id integer [primary key]
+  user_foto_url varchar
+  description text
+  city integer
+  interests json
+}
+
+// Блок графовой БД (Neo4j)
+// репликация master-slave (async-sync)
+// шардирование по user_id
+Table user_relations {
+  relation_id interger [primary key]
+  user_id integer
+  relation_user_id interger
+  relation_type user_relation_status
+}
+
+
+
 Enum media_type {
   "photo"
   "video"
   "audio"
 }
 
+Enum chat_type {
+  "chat"
+  "private"
+}
 
+Enum user_relation_status {
+  "friend"
+  "love"
+}
 
 Ref: "user_data"."user_id" - "users"."user_id"
 
