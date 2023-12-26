@@ -1,12 +1,12 @@
 // Основные моменты
 // 1. Все таблицы расположены в трех БД (Postgre, Mongo & Neo4j)
-// 2. Предполагается виртуальное шардирование (условные 128 шард, где физически есть изначально 1-2)
-// 3. На каждом шарде есть 1 master и 2 slave
+// 2. Предполагается виртуальное шардирование (1024 шард, где физически есть изначально 1-2)
+// 3. На каждом шарде есть 1 master и 2 slave (реплики)
 
 
 // Блок реляционной БД (PostgreSQL)
 // репликация master-slave (async-sync)
-// шардирование по user_id
+// шардирование по user_id (key-base)
 Table users {
   user_id integer [primary key]
   name varchar
@@ -73,7 +73,7 @@ Table user_media {
 
 // Блок  документоориентированной БД (MongoDb)
 // репликация master-slave (async-sync)
-// шардирование по user_id
+// шардирование по user_id (key-base)
 Table user_data {
   user_id integer [primary key]
   user_foto_url varchar
@@ -84,7 +84,7 @@ Table user_data {
 
 // Блок графовой БД (Neo4j)
 // репликация master-slave (async-sync)
-// шардирование по user_id
+// шардирование по user_id (key-base)
 Table user_relations {
   relation_id interger [primary key]
   user_id integer
