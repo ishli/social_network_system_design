@@ -1,0 +1,36 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+Person(user, "User")
+Container(loadBalancer, "Load Balancer", "Nginx", "Uses power-of-two-choices load balancing")
+Container(apiGateway, "API Gateway", "C#")
+
+System_Boundary(feedSystem, "Feed System") {
+    Container(feedService, "Feeds Service", "C#", "Handles user feeds")
+    Container(postService, "Posts Service", "C#", "Handles user posts")
+    ContainerDb(postDatabase, "Posts database", $tags="db", "PostgreSQL", "Stores user posts, replication  master-slave (async-sync), shard by user_id (key-base)")
+    ContainerDb(feedCache, "Feed cache", "Redis", "Stores user feeds")
+    
+}
+
+System_Boundary(other, "Other systems") {
+  System(friendsSystem, "Friends System", "Software system", "Handles relations between users (friends, subscribers, etc.)")
+  ContainerQueue(relationMQ, "Message queue", "Kafka", "Keeps topic for adding a post")
+}
+
+Rel(user, loadBalancer, "CRUD user's feeds and posts", "REST")
+Rel(loadBalancer, apiGateway, "CRUD user's feeds and posts", "REST")
+Rel(apiGateway, feedService, "CRUD user's feeds", "GRPC")
+Rel(apiGateway, postService, "CRUD user's post", "GRPC")
+Rel(feedService, postDatabase, "Creates and reads posts")
+Rel(postService, feedCache, "Creates and reads feeds")
+
+Rel(feedService, friendsSystem, "Get friends")
+
+Rel(postService, relationMQ, "After create post  in microservice")
+
+Rel(relationMQ, feedService, "Pulls data")
+
+System(friendsSystem, "Friends System", "Software system", "Store relations between users (friends, subscribers, etc.)")
+@enduml
