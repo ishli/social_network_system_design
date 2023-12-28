@@ -149,8 +149,8 @@ $$
 
 * С2 уровень
     * Профили: 
-      ![C2](./architecture/c2/profiles.svg)
-    * Друзья: ![C2](./architecture/c2/files.svg)
-    * Ленты: ![C2](./architecture/c2/feeds.svg)
-    * Чаты: ![C2](./architecture/c2/chats.svg)
-    * Файлы: ![C2](./architecture/c2/chats.svg)
+      ![C2](./architecture/с2_level/profiles.svg)
+    * Друзья: ![C2](./architecture/с2_level/files.svg)
+    * Ленты: ![C2](./architecture/с2_level/feeds.svg)
+    * Чаты: ![C2](./architecture/с2_level/chats.svg)
+    * Файлы: ![C2](./architecture/с2_level/chats.svg)
