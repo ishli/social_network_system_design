@@ -148,17 +148,13 @@ $$
 ![C1](./architecture/c1.svg)
 
 * С2 уровень
-    * Профили:       
+    * Профили:  
     ![C2](./architecture/с2_level/profiles.svg)
-    <br/><br/>
-    * Друзья: 
+    * Друзья:  
     ![C2](./architecture/с2_level/files.svg)
-    <br/><br/>
-    * Ленты: 
+    * Ленты:  
     ![C2](./architecture/с2_level/feeds.svg)
-    <br/><br/>
-    * Чаты: 
+    * Чаты:  
     ![C2](./architecture/с2_level/chats.svg)
-    <br/><br/>
-    * Файлы: 
+    * Файлы:  
     ![C2](./architecture/с2_level/chats.svg)
