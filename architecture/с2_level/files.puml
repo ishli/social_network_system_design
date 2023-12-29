@@ -1,0 +1,24 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+Container(loadBalancer, "Load Balancer", "Nginx", "Uses power-of-two-choices load balancing")
+Container(apiGateway, "API Gateway", "C#")
+
+System_Boundary(filesSystem, "Files System") {
+    Container(filesService, "Files Service", "C#", "Handles uploading files")
+    ContainerDb(database, "Chat and messages database",  $tags="db", "S3", "Blob storage")
+}
+
+System(cdn, "CDN", "CDN")
+
+
+Rel(user, loadBalancer, "Uploads files", "REST")
+Rel(user, cdn, "Downloads files")
+Rel(loadBalancer, apiGateway, "Uploads files", "REST")
+Rel(apiGateway, filesService, "Uploads files", "REST")
+Rel(filesService, database, "Uploads files to DB")
+Rel(filesService, cdn, "Uploads files to CDN")
+
+
+@enduml

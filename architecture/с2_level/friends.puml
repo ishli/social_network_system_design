@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+Container(loadBalancer, "Load Balancer", "Nginx", "Uses power-of-two-choices load balancing")
+Container(apiGateway, "API Gateway", "C#")
+
+System_Boundary(friendsSystem, "Friends System") {
+  Container(friendsService, "Friends Service", "C#", "Handles users friends")
+  ContainerDb(friendsDatabase, "Chat and messages database", $tags="db", "Neo4j", "Stores user relations, replication  master-slave (async-sync)")
+    
+}
+
+System_Boundary(other, "Other systems") {
+  ContainerQueue(friendsMQ, "Friends queue", "Kafka", "Keeps topics for adding/removing friend relations")
+}
+
+
+Rel(user, loadBalancer, "CRUD user's friends", "REST")
+Rel(loadBalancer, apiGateway, "CRUD user's friends", "REST")
+Rel(apiGateway, friendsService, "CRUD user's friends", "GRPC")
+Rel(friendsService, friendsDatabase, "CRUD user's friends")
+Rel(friendsService, friendsMQ, "After create or remove friend relation")
+Rel(friendsMQ, friendsService, "Pulls data")
+
+
+@enduml

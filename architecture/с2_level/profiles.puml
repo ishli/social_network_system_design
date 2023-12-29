@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+Container(loadBalancer, "Load Balancer", "Nginx", "Uses power-of-two-choices load balancing")
+Container(apiGateway, "API Gateway", "C#")
+
+System_Boundary(profileSystem, "Profiles System") {
+  Container(profilesService, "Profiles Service", "C#", "Handles users profiles")
+  ContainerDb(usersDatabase, "Users database", $tags="db", "PostgreSQL", "Stores user minimal info, replication  master-slave (async-sync), shard by user_id (key-base)")
+	ContainerDb(profilesDatabase, "Profiles database", $tags="db", "MongoDB", "Stores user profiles, replication  master-slave (async-sync), shard by user_id (key-base)")
+    
+}
+
+
+Rel(user, loadBalancer, "Views user's profile", "REST")
+Rel(loadBalancer, apiGateway, "Views user's profile", "REST")
+Rel(apiGateway, profilesService, "Views user's profile", "GRPC")
+Rel(profilesService, usersDatabase, "CRUD users minimal info")
+Rel(profilesService, profilesDatabase, "CRUD profiles")
+
+
+@enduml
+
+

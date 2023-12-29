@@ -1,0 +1,29 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "User")
+Container(loadBalancer, "Load Balancer", "Nginx", "Uses power-of-two-choices load balancing")
+Container(apiGateway, "API Gateway", "C#")
+
+System_Boundary(chatsSystem, "Chats System") {
+  Container(chatsService, "Chats Service", "C#", "Handles users chats and messages")
+  ContainerDb(chatsDatabase, "Chat and messages database", $tags="db", "PostgreSQL", "Stores user chats and messages, replication  master-slave (async-sync), shard by user_id (key-base)")
+    
+}
+
+System_Boundary(other, "Other systems") {
+  ContainerQueue(chatMQ, "Chats queue", "Kafka", "Keeps topic for adding chat and message")
+}
+
+
+Rel(user, loadBalancer, "CRUD user's chats", "REST")
+Rel(loadBalancer, apiGateway, "CRUD user's chats", "REST")
+Rel(apiGateway, chatsService, "CRUD user's chats", "GRPC")
+Rel(chatsService, chatsDatabase, "CRUD user's chats")
+Rel(chatsService, chatMQ, "After create chat or add message")
+Rel(chatMQ, chatsService, "Pulls data")
+
+
+@enduml
+
+
